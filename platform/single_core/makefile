@@ -1,5 +1,5 @@
-APP = app/test_double
-ARCH = riscv/hf-riscv
+APP = app/aperiodic_task
+ARCH = mips/hf-risc
 
 SERIAL_BAUD=57600
 SERIAL_DEVICE=/dev/ttyUSB0
