@@ -90,9 +90,9 @@ void app_main(void){
 	int32_t i;
 	
 	
-	//hf_spawn(task1, 0, 0, 0, "task1", 1024);
+	hf_spawn(task1, 0, 0, 0, "task1", 1024);
 	hf_spawn(task2, 0, 3, 0, "task2", 1024);
-	//hf_spawn(task3, 3, 1, 2, "task3", 1024);
+	hf_spawn(task3, 3, 1, 2, "task3", 1024);
 	hf_spawn(aperiodic_scheduler, 10, 1, 10, "aperiodic_scheduler", 1024);
 	
 	
