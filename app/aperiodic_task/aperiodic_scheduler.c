@@ -50,51 +50,49 @@ void aperiodic_scheduler(void)
 	}
 }
 
-void task1(void)
+void periodoc_task(void)
 {
 	int32_t jobs, id;
 	id = hf_selfid();
 	for(;;){
 		jobs = hf_jobs(id);
-		printf("Task Melhor esforco\n");
-		//printf("\n%s (%d)[%d][%d]", hf_selfname(), id, hf_jobs(id), hf_dlm(id));
+		printf("\n%s (%d)[%d][%d]", hf_selfname(), id, hf_jobs(id), hf_dlm(id));
 		while (jobs == hf_jobs(id));
 	}
 }
 
-void task2(void)
+void aperiodic_task(void)
 {
 	int32_t jobs, id;
 	id = hf_selfid();
 	for(;;){
 		jobs = hf_jobs(id);
-		printf("Task Aperiodica\n");
-		//printf("\n%s (%d)[%d][%d]", hf_selfname(), id, hf_jobs(id), hf_dlm(id));
+		printf("\n%s (%d)[%d][%d]", hf_selfname(), id, hf_jobs(id), hf_dlm(id));
 		while (jobs == hf_jobs(id));
 	}
 }
 
-void task3(void)
+void best_effort_task(void)
 {
 	int32_t jobs, id;
 	id = hf_selfid();
+	int32_t r = 0;
 	for(;;){
-		jobs = hf_jobs(id);
-		printf("Task Periodica\n");
-		//printf("\n%s (%d)[%d][%d]", hf_selfname(), id, hf_jobs(id), hf_dlm(id));
-		while (jobs == hf_jobs(id));
+		hf_spawn(aperiodic_task, 0, 3, 0, "aperiodic task " + r, 1024);
+		r = ((random() % 9) + 1) * 50;
+		printf("\n%s (%d)[%d][%d] Delay: %d", hf_selfname(), id, hf_jobs(id), hf_dlm(id), r);
+		delay_ms(r);
 	}
 }
 
 void app_main(void){
 	int32_t i;
 	
+	hf_spawn(periodoc_task, 3, 1, 2, "periodoc_task 1", 1024);
+	hf_spawn(periodoc_task, 5, 1, 2, "periodoc_task 2", 1024);
+	hf_spawn(periodoc_task, 10, 1, 2, "periodoc_task 3", 1024);
+	hf_spawn(aperiodic_scheduler, 4, 1, 10, "aperiodic_scheduler", 1024);
 	
-	hf_spawn(task1, 0, 0, 0, "task1", 1024);
-	hf_spawn(task2, 0, 3, 0, "task2", 1024);
-	hf_spawn(task3, 3, 1, 2, "task3", 1024);
-	hf_spawn(aperiodic_scheduler, 10, 1, 10, "aperiodic_scheduler", 1024);
-	
-	
+	hf_spawn(best_effort_task, 0, 0, 0, "task creator", 1024);
 }
 
