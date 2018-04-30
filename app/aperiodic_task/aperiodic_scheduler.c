@@ -42,9 +42,9 @@ void aperiodic_scheduler(void)
 		if (krnl_task->pstack[0] != STACK_MAGIC)
 			panic(PANIC_STACK_OVERFLOW);
 
-		// task->state = TASK_RUNNING;
+		task->state = TASK_RUNNING;
 
-		// _context_restore(task->task_context, 1);
+		_context_restore(task->task_context, 1);
 		
 
 	}
@@ -56,7 +56,7 @@ void periodoc_task(void)
 	id = hf_selfid();
 	for(;;){
 		jobs = hf_jobs(id);
-		printf("\n%s (%d)[%d][%d]", hf_selfname(), id, hf_jobs(id), hf_dlm(id));
+		printf("\n%s (%d)[%d][%d]\n", hf_selfname(), id, hf_jobs(id), hf_dlm(id));
 		while (jobs == hf_jobs(id));
 	}
 }
@@ -67,7 +67,7 @@ void aperiodic_task(void)
 	id = hf_selfid();
 	for(;;){
 		jobs = hf_jobs(id);
-		printf("\n%s (%d)[%d][%d]", hf_selfname(), id, hf_jobs(id), hf_dlm(id));
+		printf("\n%s (%d)[%d][%d]\n", hf_selfname(), id, hf_jobs(id), hf_dlm(id));
 		while (jobs == hf_jobs(id));
 	}
 }
@@ -78,9 +78,9 @@ void best_effort_task(void)
 	id = hf_selfid();
 	int32_t r = 0;
 	for(;;){
-		hf_spawn(aperiodic_task, 0, 3, 0, "aperiodic task " + r, 1024);
+		hf_spawn(aperiodic_task, 0, 3, 0, "aperiodic_task " + r, 1024);
 		r = ((random() % 9) + 1) * 50;
-		printf("\n%s (%d)[%d][%d] Delay: %d", hf_selfname(), id, hf_jobs(id), hf_dlm(id), r);
+		printf("\n%s (%d)[%d][%d] Delay: %d\n", hf_selfname(), id, hf_jobs(id), hf_dlm(id), r);
 		delay_ms(r);
 	}
 }
