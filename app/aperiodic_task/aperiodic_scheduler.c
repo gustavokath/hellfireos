@@ -43,6 +43,7 @@ void aperiodic_scheduler(void)
 			panic(PANIC_STACK_OVERFLOW);
 
 		task->state = TASK_RUNNING;
+		krnl_current_task = task->id;
 
 		_context_restore(task->task_context, 1);
 		
