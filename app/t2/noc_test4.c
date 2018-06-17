@@ -1,7 +1,7 @@
 #include <hellfire.h>
 #include <noc.h>
 
-char p[9][9] = {
+char p[1][9][9] = {{
 	{0, 0, 0, 9, 0, 4, 0, 0, 1},
 	{0, 2, 0, 3, 0, 0, 0, 5, 0},
 	{9, 0, 6, 0, 0, 0, 0, 0, 0},
@@ -11,7 +11,7 @@ char p[9][9] = {
 	{0, 0, 0, 0, 0, 0, 9, 0, 7},
 	{0, 7, 0, 0, 0, 5, 0, 1, 0},
 	{3, 0, 0, 4, 0, 7, 0, 0, 0}
-};
+}};
 
 void print_puzzle(char (*a)[9], int l, int c)
 {
@@ -90,7 +90,7 @@ void dispatcher(void){
 	int8_t temp;
 	char** tasks[2];
 
-	tasks[0] = p;
+	tasks[0] = p[0];
 
 	if (hf_comm_create(hf_selfid(), 100, 0))
 		panic(0xff);
@@ -180,6 +180,7 @@ void worker(void){
 			printf("[WORKER %d]:: Recebe de %d na porta %d - size %d\n", channel, cpu, port, size);
 			if (size == 20){
 				printf("[WORKER %d]:: Nenhum problema disponivel\n",channel);
+				delay_ms(50);
 			} else {
 				printf("[WORKER %d]:: Resolve Puzzle\n", channel);
 
@@ -202,6 +203,6 @@ void app_main(void)
 		hf_spawn(dispatcher, 0, 0, 0, "t0", 4096);
 	}else{
 //		hf_spawn(worker, 0, 0, 0, "t"+hf_cpuid(), 4096);
-		hf_spawn(worker, 0, 0, 0, "t800", 4096);
+		hf_spawn(worker, 0, 0, 0, "t800", 8192);
 	}
 }
