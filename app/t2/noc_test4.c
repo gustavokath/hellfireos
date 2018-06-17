@@ -599,7 +599,7 @@ void dispatcher(void){
 	print_puzzle(tasks[0], 9, 9);
 
 	t = _readcounter();
-	printf("[DISPATCHER]:: Tempo Inicial %d\n", t);
+
 	while (1){
 		 i = hf_recvprobe();
 		 if (i >= 0) {
@@ -607,13 +607,9 @@ void dispatcher(void){
 		 	val = hf_recv(&cpu, &port, buf, &size, i);
 			if (val)
 				printf("hf_recv(): error %d\n", val);
-			printf("[DISPATCHER]:: Recebe de %d na porta %d\n", cpu, port);
 
 			if (size == 10){
-				printf("[DISPATCHER]:: Envia problema para %d na porta %d\n", cpu, port);
 				if(next < 50){
-					printf("[DISPATCHER]: Indo enviar problema para %d na porta %d\n", cpu, port);
-					printf("[DISPATCHER]: Mais info: %d\n", next);
 					cpus[cpu] = next;
 					status[next] = 1;
 					val = hf_send(cpu, 3000, tasks[next], 81, hf_cpuid());
@@ -621,23 +617,15 @@ void dispatcher(void){
 						printf("hf_send(): error %d\n", val);
 					next++;
 				}else{
-					printf("[DISPATCHER]: Avisa nenhum problema disponível para %d na porta %d\n", cpu, port);
 					val = hf_send(cpu, 3000, buf, 20, hf_cpuid());
 					if (val)
 						printf("hf_sendack(): error %d\n", val);
 				}
 			} else {
-				printf("[DISPATCHER]:: Recebeu resultado de %d na porta %d\n", cpu, port);
 				temp = cpus[cpu];
 				status[temp] = 2;
 				tasks[temp] = *buf;
-
-				printf("[DISPATCHER]::  Recebe resultado de %d\n", cpu);
-
-				print_puzzle(buf, 9, 9);
-
 				received++;
-				printf("[DISPATCHER]:: Recebido %d resultados\n", received);
 				if (received >= 50){
 					t = _readcounter() - t;
 					printf("[DISPATCHER]:: Tempo de Processamento Total: %d\n", t);
@@ -668,27 +656,19 @@ void worker(void){
 			val = hf_send(0, 100, buf, 10, channel);
 			if (val)
 				printf("hf_sendack(): error %d\n", val);
-			else
-				printf("[WORKER %d]:: Pede novo problema \n", channel);
 			waiting = 1;
 		}
 
 		i = hf_recvprobe();
 		if (i >= 0) {
-			printf("[WORKER]:: i = %d \n ", i);
 			size = 0;
 			val = hf_recv(&cpu, &port, buf, &size, i);
 			if (val)
 				printf("hf_recv(): error %d\n", val);
-			printf("[WORKER %d]:: Recebe de %d na porta %d - size %d\n", channel, cpu, port, size);
 			if (size == 20){
-				printf("[WORKER %d]:: Nenhum problema disponivel\n",channel);
 				delay_ms(1000);
 			} else {
-				printf("[WORKER %d]:: Resolve Puzzle\n", channel);
-
-				print_puzzle(buf, 9, 9);
-
+				
 				sudoku(buf ,0,0);
 
 				val = hf_send(0, 100, buf, size, channel);
@@ -705,7 +685,6 @@ void app_main(void)
 	if (hf_cpuid() == 0){
 		hf_spawn(dispatcher, 0, 0, 0, "t0", 4096);
 	}else{
-//		hf_spawn(worker, 0, 0, 0, "t"+hf_cpuid(), 4096);
 		hf_spawn(worker, 0, 0, 0, "t800", 8192);
 	}
 }
