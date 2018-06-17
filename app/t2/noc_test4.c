@@ -578,8 +578,9 @@ void dispatcher(void){
 	uint16_t cpu, port, size;
 	int8_t status[50];
 	int8_t cpus[50];
-	int8_t next = 0;
+	int8_t next = 0, received = 0;
 	int8_t temp;
+	uint32_t t;
 	char** tasks[50];
 
 	for(i=0;i<50;i++){
@@ -597,7 +598,8 @@ void dispatcher(void){
 
 	print_puzzle(tasks[0], 9, 9);
 
-
+	t = _readcounter();
+	printf("[DISPATCHER]:: Tempo Inicial %d\n", t);
 	while (1){
 		 i = hf_recvprobe();
 		 if (i >= 0) {
@@ -633,6 +635,13 @@ void dispatcher(void){
 				printf("[DISPATCHER]::  Recebe resultado de %d\n", cpu);
 
 				print_puzzle(buf, 9, 9);
+
+				received++;
+				printf("[DISPATCHER]:: Recebido %d resultados\n", received);
+				if (received >= 50){
+					t = _readcounter() - t;
+					printf("[DISPATCHER]:: Tempo de Processamento Total: %d\n", t);
+				}
 			}
 		}
 	}
@@ -674,7 +683,7 @@ void worker(void){
 			printf("[WORKER %d]:: Recebe de %d na porta %d - size %d\n", channel, cpu, port, size);
 			if (size == 20){
 				printf("[WORKER %d]:: Nenhum problema disponivel\n",channel);
-				delay_ms(50);
+				delay_ms(1000);
 			} else {
 				printf("[WORKER %d]:: Resolve Puzzle\n", channel);
 
