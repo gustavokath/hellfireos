@@ -599,7 +599,7 @@ void dispatcher(void){
 	print_puzzle(tasks[0], 9, 9);
 
 	t = _readcounter();
-
+	printf("[DISPATCHER]:: Iniciando Dispatcher.\n");
 	while (1){
 		 i = hf_recvprobe();
 		 if (i >= 0) {
@@ -626,6 +626,7 @@ void dispatcher(void){
 				status[temp] = 2;
 				tasks[temp] = *buf;
 				received++;
+				printf("[DISPATCHER]:: Recebido Resposta: %d\n", received);
 				if (received >= 50){
 					t = _readcounter() - t;
 					printf("[DISPATCHER]:: Tempo de Processamento Total: %d\n", t);
