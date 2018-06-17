@@ -580,7 +580,7 @@ void dispatcher(void){
 	int8_t cpus[50];
 	int8_t next = 0;
 	int8_t temp;
-	char** tasks[2];
+	char** tasks[50];
 
 	for(i=0;i<50;i++){
 		tasks[i] = p[i];
@@ -609,7 +609,7 @@ void dispatcher(void){
 
 			if (size == 10){
 				printf("[DISPATCHER]:: Envia problema para %d na porta %d\n", cpu, port);
-				if(next < 1){
+				if(next < 50){
 					printf("[DISPATCHER]: Indo enviar problema para %d na porta %d\n", cpu, port);
 					printf("[DISPATCHER]: Mais info: %d\n", next);
 					cpus[cpu] = next;
