@@ -1,6 +1,7 @@
 CFLAGS = -O2 #-Wall  
 GCC = gcc $(CFLAGS)
 CORES2 = 0 1
+CORES1x2 = 0 1
 CORES2x2 = 0 1 2 3
 CORES3x2 = 0 1 2 3 4 5
 CORES3x3 = 0 1 2 3 4 5 6 7 8
@@ -24,6 +25,8 @@ CORES16x16 = 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
 
 build: 
 	$(GCC) -o mpsoc_sim ./source/mpsoc_sim.c ./source/noc.c -lm -DN_CORES=256 -DNOC_BUFFER_SIZE=16 -DOS_PACKET_SIZE=64 -DBUS=1
+noc_1x2:
+	$(GCC) -o mpsoc_sim ./source/mpsoc_sim.c ./source/noc.c -lm -DN_CORES=2 -DNOC_WIDTH=1 -DNOC_HEIGHT=2 -DNOC_BUFFER_SIZE=16 -DOS_PACKET_SIZE=64
 noc_2x2:
 	$(GCC) -o mpsoc_sim ./source/mpsoc_sim.c ./source/noc.c -lm -DN_CORES=4 -DNOC_WIDTH=2 -DNOC_HEIGHT=2 -DNOC_BUFFER_SIZE=16 -DOS_PACKET_SIZE=64
 noc_3x2:
